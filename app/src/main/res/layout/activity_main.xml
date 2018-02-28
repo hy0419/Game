@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.test.countgame.MainActivity">
+
+    <ImageView
+        android:id="@+id/moguraView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button3"
+        android:layout_marginTop="14dp"
+        android:layout_toEndOf="@+id/tv"
+        android:layout_toRightOf="@+id/tv"
+        app:srcCompat="@drawable/mogura" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onTv"
+        android:text="0"
+        android:textSize="42sp" />
+
+    <ProgressBar
+        android:id="@+id/time"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv"
+        android:layout_marginLeft="57dp"
+        android:layout_marginStart="57dp"
+        android:layout_marginTop="64dp"
+        android:layout_toEndOf="@+id/tv"
+        android:layout_toRightOf="@+id/tv" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/time"
+        android:layout_marginLeft="33dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginTop="23dp"
+        android:layout_toEndOf="@+id/tv"
+        android:layout_toRightOf="@+id/tv"
+        android:text="Button" />
+
+    <ImageView
+        android:id="@+id/moguraView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="19dp"
+        app:srcCompat="@drawable/mogura" />
+
+</RelativeLayout>
