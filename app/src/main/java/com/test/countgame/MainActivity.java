@@ -18,7 +18,7 @@ import android.view.WindowManager;
 public class MainActivity extends AppCompatActivity {
 
     int count = 0;
-    int timer = 100;
+    int timer = 10;
     ProgressBar bar = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,45 +79,55 @@ public class MainActivity extends AppCompatActivity {
     public void onTv(View v) {
         // カウントの加算
         count++;
-        ((TextView) findViewById(R.id.tv)).setText("" + count);
+        //((TextView) findViewById(R.id.tv)).setText("" + count);
+        this.findViewById(R.id.moguraView).setVisibility(View.VISIBLE);
+        this.findViewById(R.id.moguraView2).setVisibility(View.VISIBLE);
+
 
         // 表示位置の変更
         int w = findViewById(R.id.activity_main).getWidth();
         int w1 = (int) (w * 0.8);
         int w2 = new Random().nextInt(w1);
-        ((TextView) findViewById(R.id.tv)).setTranslationX(w2);
+        //((TextView) findViewById(R.id.tv)).setTranslationX(w2);
+        this.findViewById(R.id.moguraView).setTranslationX(w2);
+        this.findViewById(R.id.moguraView2).setTranslationX(w2);
+
 
         int h = findViewById(R.id.activity_main).getHeight();
         int h1 = (int) (h * 0.8);
         int h2 = new Random().nextInt(h1);
-        ((TextView) findViewById(R.id.tv)).setTranslationY(h2);
+        //((TextView) findViewById(R.id.tv)).setTranslationY(h2);
+        this.findViewById(R.id.moguraView).setTranslationY(h2);
+        this.findViewById(R.id.moguraView2).setTranslationY(h2);
     }
     public void onTv() {
         // カウントの加算
         count++;
         timer --;
         bar.setProgress(timer);
-        ((TextView) this.findViewById(R.id.tv)).setText("" + count);
+        //((TextView) this.findViewById(R.id.tv)).setText("" + count);
         this.findViewById(R.id.moguraView).setVisibility(View.VISIBLE);
         this.findViewById(R.id.moguraView2).setVisibility(View.VISIBLE);
 
-        if(count%2 == 0) {
-            this.findViewById(R.id.moguraView).setVisibility(View.GONE);
-            this.findViewById(R.id.moguraView2).setVisibility(View.GONE);//見えなくなる
-        }
+//        if(count%2 == 0) {
+//            this.findViewById(R.id.moguraView).setVisibility(View.GONE);
+//            this.findViewById(R.id.moguraView2).setVisibility(View.GONE);//見えなくなるやつ
+//        }
         // 表示位置の変更
         WindowManager wm = getWindowManager();
         Display disp = wm.getDefaultDisplay();
         int w = disp.getWidth();//this.findViewById(R.id.activity_main).getWidth();
         int w1 = (int) (w * 0.8);
         int w2 = new Random().nextInt(w1);
-        ((TextView) findViewById(R.id.tv)).setTranslationX(w2);
+        //((TextView) findViewById(R.id.tv)).setTranslationX(w2);
+        this.findViewById(R.id.moguraView).setTranslationX(w2);
         this.findViewById(R.id.moguraView2).setTranslationX(w2);
         int h = disp.getWidth();//(R.id.activity_main).getHeight();
         int h1 = (int) (h * 0.8);
         int h2 = new Random().nextInt(h1);
-        ((TextView) findViewById(R.id.tv)).setTranslationY(h2);
-        ((TextView) findViewById(R.id.tv)).setTextSize((int)(h2*0.1));
+        //((TextView) findViewById(R.id.tv)).setTranslationY(h2);
+        //((TextView) findViewById(R.id.tv)).setTextSize((int)(h2*0.1));
+        this.findViewById(R.id.moguraView).setTranslationX(h2);
         this.findViewById(R.id.moguraView2).setTranslationY(h2);
     }
 
