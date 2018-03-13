@@ -11,8 +11,6 @@
         android:id="@+id/moguraView3"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_alignLeft="@+id/button3"
-        android:layout_alignStart="@+id/button3"
         android:layout_centerVertical="true"
         android:onClick="onTap"
         app:srcCompat="@drawable/mogura" />
@@ -27,6 +25,16 @@
         android:onClick="onTap"
         app:srcCompat="@drawable/mogura" />
 
+    <ImageView
+        android:id="@+id/moguraView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/moguraView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:onClick="onTap"
+        app:srcCompat="@drawable/mogura" />
+
     <ProgressBar
         android:id="@+id/time"
         style="?android:attr/progressBarStyleHorizontal"
@@ -38,31 +46,14 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/time"
-        android:layout_marginLeft="33dp"
-        android:layout_marginStart="33dp"
-        android:layout_marginTop="23dp"
-        android:layout_toEndOf="@+id/tv"
-        android:layout_toRightOf="@+id/tv"
-        android:text="Button" />
-
-    <ImageView
-        android:id="@+id/moguraView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_below="@+id/moguraView2"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:onClick="onTap"
-        app:srcCompat="@drawable/mogura" />
-
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        />
 
 </RelativeLayout>
