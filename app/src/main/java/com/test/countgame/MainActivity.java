@@ -30,13 +30,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int frame = 0;
     ProgressBar bar = null;
     PopupWindow popupWin;
-    int maxmogura = 8;
-    ImageView moguralist[] = new ImageView[10];
 
-    int moguH = findViewById(R.id.moguraView).getHeight();
-    int mogu2H = findViewById(R.id.moguraView2).getHeight();
-    int moguW = findViewById(R.id.moguraView).getWidth();
-    int mogu2W = findViewById(R.id.moguraView2).getWidth();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,17 +129,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
 
 
-    public void onTap(View v) {
-        // カウントの加算
-        count++;
-        drawMogura();
-    }
+
     public void onRetryButton(View v){
         countDownTimer.start();
         popupWin.dismiss();
         timer = 30;
         count = 0;
 
+    }
+
+    public void onTap(View v){
+        drawMogura();
+        count++;
     }
 
     public void drawMogura() {
@@ -159,6 +156,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         this.findViewById(R.id.moguraView2).setVisibility(View.VISIBLE);
         this.findViewById(R.id.moguraView3).setVisibility(View.GONE);//見えない
 
+        int moguH = findViewById(R.id.moguraView).getHeight();
+        int mogu2H = findViewById(R.id.moguraView2).getHeight();
+        int moguW = findViewById(R.id.moguraView).getWidth();
+        int mogu2W = findViewById(R.id.moguraView2).getWidth();
 
 
 //        if (count % 2 == 0) {
@@ -170,25 +171,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Display disp = wm.getDefaultDisplay();
         int displayW = disp.getWidth();//this.findViewById(R.id.activity_main).getWidth();
 
-
-        int w1 = (int) (displayW * 0.5);
-        Random r = new Random();
-        int w2 = r.nextInt(w1);
-        if (w2 + mogu2W > displayW) {
+        Random rx = new Random();
+        Random ry = new Random();
+            int w1 = (int) (displayW * 0.5);
+            int w2 = rx.nextInt(w1);
+            if (w2 + moguW > displayW) {
             w2 -= moguW;
-        }
+            }
 
             this.findViewById(R.id.moguraView).setX(w2);
 
 
-            w2 = r.nextInt(w1);
+
+            w2 = rx.nextInt(w1);
             if (w2 + mogu2W > displayW) {
                 w2 -= mogu2W;
             }
 
             this.findViewById(R.id.moguraView2).setX(w2);
 
-            w2 = r.nextInt(w1);
+            w2 = rx.nextInt(w1);
             if (w2 + mogu2W > displayW) {
                 w2 -= mogu2W;
             }
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int displayH = disp.getWidth();//(R.id.activity_main).getHeight();
 
             int h1 = (int) (displayH * 0.5);
-            int h2 = new Random().nextInt(h1);
+            int h2 = ry.nextInt(h1);
             if (h2 + moguH > displayH) {
                 h2 -= moguH;
             }
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             this.findViewById(R.id.moguraView).setTranslationY(h2);
 
 
-            h2 = r.nextInt(h1);
+            h2 = ry.nextInt(h1);
             if (h2 + mogu2H > displayH) {
                 h2 -= mogu2H;
 
@@ -214,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             this.findViewById(R.id.moguraView2).setTranslationY(h2);
 
-        h2 = r.nextInt(h1);
+        h2 = ry.nextInt(h1);
         if (h2 + mogu2H > displayH) {
             h2 -= mogu2H;
 
@@ -222,9 +224,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         this.findViewById(R.id.moguraView3).setTranslationY(h2);
 
-        for(int moguracount=0;moguracount< maxmogura; count++){
-            moguralist[count] = new ImageView(this);
-        }
+
 
 
         if(frame>=1){
