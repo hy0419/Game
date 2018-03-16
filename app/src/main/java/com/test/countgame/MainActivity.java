@@ -1,12 +1,17 @@
 package com.test.countgame;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -18,33 +23,83 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.os.CountDownTimer;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.view.Display;
 import android.view.WindowManager;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager sensorManager;
     int count = 0;
-    int timer = 30;
+
+    final int const_timer=10;
+    int timer = const_timer;
     float sensorX, sensorY, sensorZ;
     int frame = 0;
     ProgressBar bar = null;
     PopupWindow popupWin;
-
-
+    Timer ttimer = null;
+    TimerTask task=null;
+    SharedPreferences prefs =null;
+    Integer array[] = {-1,-1,-1,-1};
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = getPreferences(Context.MODE_PRIVATE);
+
+
+        array[0]= prefs.getInt("topScore",0);
+         array[1]= prefs.getInt("secondScore",0);
+         array[2]= prefs.getInt("thirdScore",0);
+
+        ttimer = new Timer();
+        task= new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendMessage(Message.obtain(handler,0,null));
+            }
+        };
+        ttimer.schedule(task,300,1000);
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         bar = (ProgressBar)findViewById(R.id.time);
-        bar.setMax(timer);
+        bar.setMax(const_timer);
 
     }
+
+
+
+
+
+
+
+
+    private Handler handler = new Handler(){
+        public void handleMessage(Message msg){
+
+            drawMogura();
+
+            timer--;
+            if(timer <=0) {
+                onTimerFinish();
+            }
+            if(frame > 0){
+                frame--;
+            }
+            bar.setProgress(timer);
+        }
+    };
+
 
     protected void onResume() {
         super.onResume();
@@ -59,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onPause() {
+
+
         super.onPause();
         // Listenerを解除
         sensorManager.unregisterListener(this);
@@ -82,27 +139,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 + " Y: " + sensorY + "\n"
                 + " Z: " + sensorZ;
 
-        Log.d("xyz", strTmp);
+       // Log.d("xyz", strTmp);
 
     }
     public void onAccuracyChanged(Sensor e,int i) {
 
     }
 
-        CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
-            @Override
-            public void onTick(long millsUntilFinished) {
 
-                drawMogura();
-
-                if(frame > 0){
-                    frame--;
-                }
-            }
-
-            @Override
-            public void onFinish() {
-
+            private void onTimerFinish() {
 
                 /*ポップアップに表示するレイアウトの設定*/
                 LinearLayout popLayout
@@ -110,9 +155,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         R.layout.resultpopup, null);
                 TextView popupText
                         = (TextView)popLayout.findViewById(R.id.scoreView);
-                popupText.setText(new Integer(count).toString());
+                popupText.setText("the socre is :"+new Integer(count).toString());
 
-                /*ポップアップの作成*/
+                array[3] = count;
+                Arrays.sort(array, Collections.reverseOrder());
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putInt("TopScore", array[0]);
+                editor.putInt("SecondScore", array[1]);
+                editor.putInt("ThirdScore", array[2]);
+                editor.apply();
+                TextView scoreHistory = (TextView)popLayout.findViewById(R.id.HistoryView);
+                scoreHistory.setText(String.format("TopScore:"+Integer.toString(array[0])+"%n"+"SecondScore:"+Integer.toString(array[1])+"%n"+"ThirdScore:"+ Integer.toString(array[2])));
+
                 View v = getWindow().getDecorView();
                 popupWin = new PopupWindow(v);
                 popupWin.setWindowLayoutMode(
@@ -121,115 +175,124 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 popupWin.setBackgroundDrawable(null);
                 popupWin.showAsDropDown(v, 0, 0);
                 Button closePopup = (Button)findViewById(R.id.retryButton);
-
-
+                ttimer.cancel();
 
             }
-        }.start();
 
 
 
 
     public void onRetryButton(View v){
-        countDownTimer.start();
+        if(ttimer!=null){
+            ttimer=null;
+        }
+        findViewById(R.id.moguraView3).setVisibility(View.GONE);
+
+        ttimer = new Timer();
+
+        task= new TimerTask() {
+            @Override
+            public void run() {
+                handler.sendMessage(Message.obtain(handler,0,null));
+            }
+        };
+        ttimer.schedule(task,300,1000);
+
         popupWin.dismiss();
-        timer = 30;
+        timer = const_timer;
         count = 0;
 
     }
 
     public void onTap(View v){
         drawMogura();
-        count++;
+        count++;// カウントの加算
+    }
+    public void onSpecialTap(View v){
+        drawMogura();
+        count =count +5;// カウントの加算
     }
 
     public void drawMogura() {
-        // カウントの加算
-
-        timer--;
-        bar.setProgress(timer);
-
-
-
 
         this.findViewById(R.id.moguraView).setVisibility(View.VISIBLE);//見える
         this.findViewById(R.id.moguraView2).setVisibility(View.VISIBLE);
         this.findViewById(R.id.moguraView3).setVisibility(View.GONE);//見えない
 
-        int moguH = findViewById(R.id.moguraView).getHeight();
-        int mogu2H = findViewById(R.id.moguraView2).getHeight();
-        int moguW = findViewById(R.id.moguraView).getWidth();
-        int mogu2W = findViewById(R.id.moguraView2).getWidth();
-
-
-//        if (count % 2 == 0) {
-//            this.findViewById(R.id.moguraView).setVisibility(View.GONE);
-//            this.findViewById(R.id.moguraView2).setVisibility(View.GONE);
-//        }
 //         表示位置の変更
         WindowManager wm = getWindowManager();
         Display disp = wm.getDefaultDisplay();
-        int displayW = disp.getWidth();//this.findViewById(R.id.activity_main).getWidth();
+        int displayW = disp.getWidth();
 
         Random rx = new Random();
         Random ry = new Random();
             int w1 = (int) (displayW * 0.5);
             int w2 = rx.nextInt(w1);
-            if (w2 + moguW > displayW) {
-            w2 -= moguW;
-            }
+
 
             this.findViewById(R.id.moguraView).setX(w2);
 
 
 
-            w2 = rx.nextInt(w1);
-            if (w2 + mogu2W > displayW) {
-                w2 -= mogu2W;
+            int w3 = rx.nextInt(w1);
+            for (int i = 0;i < 10;i++) {
+                if (Math.abs(w3-w2) <= 230) {
+                    w3 = rx.nextInt(w1);
+                }
+                else{
+                    break;
+                }
             }
 
-            this.findViewById(R.id.moguraView2).setX(w2);
+            this.findViewById(R.id.moguraView2).setX(w3);
 
-            w2 = rx.nextInt(w1);
-            if (w2 + mogu2W > displayW) {
-                w2 -= mogu2W;
+            int w4 = rx.nextInt(w1);
+        for (int i = 0;i < 10;i++) {
+            if (Math.abs(w3-w2) <= 230 && Math.abs(w4-w3)<=230) {
+                w4 = rx.nextInt(w1);
             }
-
-            this.findViewById(R.id.moguraView3).setX(w2);
-
-            int displayH = disp.getWidth();//(R.id.activity_main).getHeight();
-
-            int h1 = (int) (displayH * 0.5);
-            int h2 = ry.nextInt(h1);
-            if (h2 + moguH > displayH) {
-                h2 -= moguH;
+            else{
+                break;
             }
-
-            this.findViewById(R.id.moguraView).setTranslationY(h2);
-
-
-            h2 = ry.nextInt(h1);
-            if (h2 + mogu2H > displayH) {
-                h2 -= mogu2H;
-
-            }
-
-            this.findViewById(R.id.moguraView2).setTranslationY(h2);
-
-        h2 = ry.nextInt(h1);
-        if (h2 + mogu2H > displayH) {
-            h2 -= mogu2H;
-
         }
+                this.findViewById(R.id.moguraView3).setX(w4);
 
-        this.findViewById(R.id.moguraView3).setTranslationY(h2);
+                int displayH = disp.getWidth();
+
+                int h1 = (int) (displayH * 0.5);
+                int h2 = ry.nextInt(h1);
+
+                    this.findViewById(R.id.moguraView).setY(h2);
+
+
+                    int h3 = ry.nextInt(h1);
+                for (int i = 0;i < 10;i++) {
+                    if (Math.abs(h3 - h2) <= 230) {
+                        h3 = rx.nextInt(h1);
+                    }
+                    else {
+                        break;
+                    }
+                }
+                    this.findViewById(R.id.moguraView2).setY(h3);
+
+                    int h4 = ry.nextInt(h1);
+                for (int i = 0;i < 10;i++) {
+                    if (Math.abs(h3-h2) <= 230 && Math.abs(h4-h3)<=230) {
+                        h4 = rx.nextInt(w1);
+                    }
+                    else{
+                        break;
+                    }
+                }
+                    this.findViewById(R.id.moguraView3).setY(h4);
 
 
 
 
-        if(frame>=1){
-            this.findViewById(R.id.moguraView3).setVisibility(View.VISIBLE);
-        }
-        }
+                        if (frame >= 1) {
+                            this.findViewById(R.id.moguraView3).setVisibility(View.VISIBLE);
+                        }
+                    }
 
-}
+                }
